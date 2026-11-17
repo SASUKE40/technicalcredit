@@ -13,7 +13,14 @@ export function extractClassMetrics(
   decl: Node,
   importLines: string[],
 ): ConstructMetrics['classMetrics'] {
-  const body = decl.childForFieldName('body');
+  const declaredBody = decl.childForFieldName('body');
+  // Enum fields, constructors and methods live in a nested body-declarations node.
+  const body =
+    declaredBody?.type === 'enum_body'
+      ? (declaredBody.namedChildren.find(
+          (c) => c.type === 'enum_body_declarations',
+        ) ?? null)
+      : declaredBody;
   const superclass =
     decl
       .childForFieldName('superclass')

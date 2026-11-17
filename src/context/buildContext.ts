@@ -1,6 +1,11 @@
 import * as vscode from 'vscode';
 
-import { extractMetrics, type ConstructMetrics } from '@/context/javaParser';
+import {
+  extractMetrics,
+  typeDeclarationAt,
+  type ConstructMetrics,
+  type TypeDeclarationTarget,
+} from '@/context/javaParser';
 
 /** Full context passed to the analyse command. */
 export interface TcContext {
@@ -10,6 +15,8 @@ export interface TcContext {
   constructMetrics: ConstructMetrics;
   insertLine: number;
   insertIndent: string;
+  /** The type declaration the annotation is inserted above. */
+  target: TypeDeclarationTarget | null;
 }
 
 /**
@@ -35,7 +42,8 @@ export async function buildContextFromSource(
   }
 
   const insertLine = resolveInsertLine(constructMetrics, anchorLine);
-  const insertIndent = source.split('\n')[insertLine]?.match(/^\s*/)?.[0] ?? '';
+  const insertIndent = indentOfLine(source, insertLine);
+  const target = await typeDeclarationAt(source, insertLine);
 
   return {
     importLines,
@@ -44,7 +52,13 @@ export async function buildContextFromSource(
     constructMetrics,
     insertLine,
     insertIndent,
+    target,
   };
+}
+
+/** Returns the leading whitespace of zero-based `line` in `source`. */
+export function indentOfLine(source: string, line: number): string {
+  return source.split('\n')[line]?.match(/^\s*/)?.[0] ?? '';
 }
 
 /** Builds the full TC context from the active editor state, including Java construct metrics. */
@@ -99,7 +113,7 @@ export function extractImportLines(allLines: string[]): string[] {
 
 /**
  * Returns the line above which the TC annotation should be inserted.
- * For class/interface constructs uses their own declaration line; for methods and
+ * For type declarations (class, interface, enum, record) uses their own declaration line; for methods and
  * fields uses the enclosing class line. Falls back to the cursor anchor line for non-Java files.
  */
 function resolveInsertLine(
@@ -112,7 +126,19 @@ function resolveInsertLine(
 
   const { constructType, startRow, enclosingClassStartRow } = constructMetrics;
 
-  return constructType === 'class' || constructType === 'interface'
-    ? startRow
-    : enclosingClassStartRow!;
+  switch (constructType) {
+    case 'class':
+    case 'interface':
+    case 'enum':
+    case 'record':
+      return startRow;
+    case 'method':
+    case 'field':
+    case 'unknown':
+      return enclosingClassStartRow ?? startRow;
+    default: {
+      const unhandled: never = constructType;
+      return unhandled;
+    }
+  }
 }
