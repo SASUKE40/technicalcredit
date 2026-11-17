@@ -31,13 +31,25 @@ const heuristicPrompts: Record<HeuristicCategory, string> = {
   'compliance-readiness': complianceReadiness,
 };
 
-/** Returns the raw detection criteria for a heuristic (no category header). Used by OPRO to optimize criteria in isolation. */
+export function isHeuristicCategory(value: string): value is HeuristicCategory {
+  return (HEURISTIC_CATEGORIES as readonly string[]).includes(value);
+}
+
+/**
+ * Returns the raw detection criteria for a heuristic (no category header). Used by OPRO to optimize criteria in isolation.
+ * Throws for unknown categories: a cast value would otherwise send the literal text "undefined" as the criteria.
+ */
 export function getHeuristicCriteria(heuristic: HeuristicCategory): string {
+  if (!isHeuristicCategory(heuristic)) {
+    throw new Error(
+      `Unknown heuristic category "${heuristic}". Expected one of: ${HEURISTIC_CATEGORIES.join(', ')}.`,
+    );
+  }
   return heuristicPrompts[heuristic];
 }
 
 /** Returns the full heuristic prompt including a category header. Use this everywhere outside OPRO. */
 export function createHeuristicPrompt(heuristic: HeuristicCategory): string {
   const label = heuristic.toUpperCase().replace(/-/g, ' ');
-  return `Detecting: ${label} Technical Credit.\n\n${heuristicPrompts[heuristic]}`;
+  return `Detecting: ${label} Technical Credit.\n\n${getHeuristicCriteria(heuristic)}`;
 }
