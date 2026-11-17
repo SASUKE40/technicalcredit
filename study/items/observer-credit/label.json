@@ -1,0 +1,22 @@
+{
+  "id": "observer-credit",
+  "pair": "observer",
+  "variant": "credit",
+  "file": "StockLevels.java",
+  "anchor": "StockLevels",
+  "tc": true,
+  "primaryCategory": "modularity",
+  "categories": {
+    "abstraction": "yes",
+    "modularity": "yes",
+    "api-stability": "no",
+    "automation": "no",
+    "compliance-readiness": "no",
+    "configurability": "no",
+    "observability": "no",
+    "reusability": "no"
+  },
+  "designPatterns": ["observer"],
+  "rationale": "Independent listeners subscribe and unsubscribe at runtime, so new reactions to stock changes are added without touching StockLevels (modularity). The subject depends only on the StockListener contract (abstraction).",
+  "labeller": "study author (single labeller, pre-run)"
+}

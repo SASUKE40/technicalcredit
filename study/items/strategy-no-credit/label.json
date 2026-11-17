@@ -1,0 +1,22 @@
+{
+  "id": "strategy-no-credit",
+  "pair": "strategy",
+  "variant": "no-credit",
+  "file": "QuoteService.java",
+  "anchor": "QuoteService",
+  "tc": false,
+  "primaryCategory": null,
+  "categories": {
+    "abstraction": "no",
+    "modularity": "no",
+    "api-stability": "no",
+    "automation": "no",
+    "compliance-readiness": "no",
+    "configurability": "no",
+    "observability": "no",
+    "reusability": "no"
+  },
+  "designPatterns": ["strategy"],
+  "rationale": "Structurally a strategy context, but the only RateRule is constructed inline with new FlatRate(), nothing is injected or configured, and there is no second implementation: the abstraction has no payoff.",
+  "labeller": "study author (single labeller, pre-run)"
+}
