@@ -24,3 +24,5 @@ CLAUDE.md
 **/.env
 **/.env.*
 dist/opro.js
+dist/pilot.js
+study/**
