@@ -1,16 +1,22 @@
 {
   "name": "technicalcredit",
   "displayName": "TechnicalCredit",
-  "description": "",
+  "description": "Detects Technical Credit in Java code with Claude and previews it as inline annotations.",
+  "publisher": "technicalcredit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cielbellerose/TechnicalCredit.git"
+  },
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.120.0"
+    "vscode": "^1.138.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onLanguage:java"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -61,7 +67,8 @@
     "tsc:check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "opro": "esbuild scripts/opro.ts --bundle --platform=node --external:@anthropic-ai/sdk --external:dotenv --outfile=dist/opro.js && node dist/opro.js"
+    "opro": "esbuild scripts/opro.ts --bundle --platform=node --external:@anthropic-ai/sdk --external:dotenv --outfile=dist/opro.js && node dist/opro.js",
+    "vsix": "npx --yes @vscode/vsce@4.1.1 package"
   },
   "jest": {
     "preset": "ts-jest",

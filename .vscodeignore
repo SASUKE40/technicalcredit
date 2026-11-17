@@ -12,3 +12,15 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+scripts/**
+coverage/**
+.github/**
+CLAUDE.md
+.prettierrc
+.prettierignore
+*.vsix
+.env
+.env.*
+**/.env
+**/.env.*
+dist/opro.js
