@@ -6,6 +6,8 @@ detection logic are not changed. The runner reuses the production path:
 `buildContextFromSource` → `createUserPrompt` → one `callClaude` per heuristic,
 in parallel, as `analyseForTC` does.
 
+Results and interpretation: [sprint-1-results.md](sprint-1-results.md).
+
 This file is the pre-registration. The dataset, labels, metrics and hypotheses
 below were committed before the first billed run, and the results of every run
 are committed under `study/runs/`.

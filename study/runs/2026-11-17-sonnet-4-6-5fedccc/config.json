@@ -1,0 +1,27 @@
+{
+  "runId": "2026-11-17-sonnet-4-6-5fedccc",
+  "startedAt": "2026-11-17T16:12:40.366Z",
+  "repeats": 5,
+  "concurrency": 2,
+  "model": "claude-sonnet-4-6",
+  "temperature": 0,
+  "heuristics": [
+    "abstraction",
+    "modularity",
+    "api-stability",
+    "automation",
+    "configurability",
+    "observability",
+    "reusability",
+    "compliance-readiness"
+  ],
+  "itemIds": [
+    "adapter-credit",
+    "adapter-no-credit",
+    "observer-credit",
+    "observer-no-credit",
+    "strategy-credit",
+    "strategy-no-credit"
+  ],
+  "gitCommit": "5fedccc"
+}
