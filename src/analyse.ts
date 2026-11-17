@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 
+import { showAnalysisError } from '@/claudeSettings';
 import { buildContext } from '@/context/buildContext';
 import { findAdrs } from '@/context/findAdrs';
 import { SYSTEM_PROMPT } from '@/prompts/systemPrompt';
@@ -82,7 +83,7 @@ export async function analyseForTC(controller: PendingAnnotation) {
           vscode.window.showInformationMessage('No TC detected in this class.');
         }
       } catch (e) {
-        vscode.window.showErrorMessage(`Analyse for TC failed: ${e}`);
+        showAnalysisError(e);
       }
     },
   );

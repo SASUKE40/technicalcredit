@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import { analyseForTC } from '@/analyse';
+import { registerClaudeSettings } from '@/claudeSettings';
 import { PendingAnnotation } from '@/comment/pendingAnnotation';
 
 /** Registers all commands, providers, and subscriptions for the extension. */
@@ -37,4 +38,7 @@ export function register(context: vscode.ExtensionContext): void {
       async () => await analyseForTC(annotationController),
     ),
   );
+
+  // Feeds settings and the stored API key into the Claude client; registers the key commands.
+  context.subscriptions.push(...registerClaudeSettings(context));
 }

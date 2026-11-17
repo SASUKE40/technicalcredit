@@ -32,8 +32,36 @@
       {
         "command": "technicalcredit.dismissTCComment",
         "title": "Technical Credit: Dismiss"
+      },
+      {
+        "command": "technicalcredit.setApiKey",
+        "title": "Technical Credit: Set API Key"
+      },
+      {
+        "command": "technicalcredit.clearApiKey",
+        "title": "Technical Credit: Clear API Key"
       }
     ],
+    "configuration": {
+      "title": "TechnicalCredit",
+      "properties": {
+        "technicalcredit.model": {
+          "type": "string",
+          "default": "claude-sonnet-4-6",
+          "markdownDescription": "Claude model ID used for analysis. The `TC_MODEL` environment variable overrides this setting."
+        },
+        "technicalcredit.temperature": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "default": 0,
+          "minimum": 0,
+          "maximum": 1,
+          "markdownDescription": "Sampling temperature. `0` keeps results as reproducible as possible. Set to `null` to omit it for models that reject the parameter. The `TC_TEMPERATURE` environment variable (a number, or `none`) overrides this setting."
+        }
+      }
+    },
     "menus": {
       "editor/context": [
         {
