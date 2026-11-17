@@ -226,11 +226,10 @@ function pct(value: number | null): string {
   return value === null ? 'n/a' : `${(value * 100).toFixed(1)}%`;
 }
 
+/** Counts hits among defined outcomes; null outcomes (ties, missing twins) are left out. */
 function fraction(values: (boolean | null)[]): { hits: number; n: number } {
-  return {
-    hits: values.filter((v) => v === true).length,
-    n: values.length,
-  };
+  const defined = values.filter((v): v is boolean => v !== null);
+  return { hits: defined.filter((v) => v).length, n: defined.length };
 }
 
 /**
