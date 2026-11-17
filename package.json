@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onLanguage:java",
+    "onCommand:technicalcredit.analyseForTC"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -33,7 +34,7 @@
         {
           "command": "technicalcredit.analyseForTC",
           "group": "navigation",
-          "when": "editorTextFocus"
+          "when": "editorTextFocus && editorLangId == java"
         }
       ],
       "commandPalette": [
