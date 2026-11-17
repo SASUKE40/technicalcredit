@@ -9,11 +9,15 @@ import type { HeuristicCategory } from '@/prompts/heuristics';
  * Looking for: an interface/abstract class that declares a clone() method
  * returning its own type, implemented by concrete classes that copy an
  * existing instance instead of being built from scratch.
+ *
+ * There is no Prototype heuristic: the eight TC heuristics are benefit categories,
+ * not design patterns. A clone() contract on an interface or abstract class is
+ * judged by the ABSTRACTION heuristic, so that is what these tests exercise.
  */
 jest.setTimeout(60_000);
 const MOCK_FILE = path.join(__dirname, 'Negative.java');
 
-const CATEGORY = 'prototype' as HeuristicCategory;
+const CATEGORY: HeuristicCategory = 'abstraction';
 
 describe('Prototype: negative', () => {
   test('ContactCard → not TC (copy constructor + snapshot() returning an unrelated type, no clone() contract)', async () => {
