@@ -6,8 +6,8 @@ later, technical _credit_ identifies strategic design decisions (abstractions,
 modular boundaries, instrumentation, documentation, etc.) that create long-term
 value for a system's evolution.
 
-Select a Java construct (class, interface, method, or field) and run **Analyse for
-TC**. The extension uses Claude to evaluate the selected code against each Technical
+Place the cursor in a Java class, interface, enum or record (or one of its methods or fields)
+and run **Analyse for TC**. The extension uses Claude to evaluate the selected code against each Technical
 Credit category. If the code exhibits Technical Credit, it suggests a `@TechnicalCredit` annotation
 describing the benefit, the conditions under which it holds, and the signals that justify it.
 No detectable Technical Credit yields no suggestions. When suggestions are produced, you preview
@@ -169,7 +169,7 @@ latency to the **TechnicalCredit** output channel.
 2. Press **F5** (or run the **Run Extension** launch configuration). This builds the
    extension and opens a new **Extension Development Host** window.
 3. In that window, open a Java file and place your cursor inside a class, interface,
-   method, or field.
+   enum or record, or one of its methods or fields.
 4. Right-click and choose **Analyse for TC** (also available from the editor context
    menu).
 5. If the analysed code exhibits Technical Credit, review the previewed

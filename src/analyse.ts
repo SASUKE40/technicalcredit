@@ -91,7 +91,9 @@ export async function analyseForTC(controller: PendingAnnotation) {
         const candidates = results.filter((r) => r.is_tc_candidate);
 
         if (candidates.length === 0) {
-          vscode.window.showInformationMessage('No TC detected in this class.');
+          vscode.window.showInformationMessage(
+            `Analyse for TC: no TC detected in ${kind} ${name}.`,
+          );
           return;
         }
 
