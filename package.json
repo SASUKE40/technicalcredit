@@ -97,7 +97,7 @@
     "tsc:check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "pilot": "node esbuild.js && esbuild scripts/pilot.ts --bundle --platform=node --external:@anthropic-ai/sdk --external:dotenv --outfile=dist/pilot.js --log-level=warning && node dist/pilot.js",
+    "pilot": "node esbuild.js && esbuild scripts/pilot.ts --bundle --platform=node --external:@anthropic-ai/sdk --external:dotenv --alias:web-tree-sitter=./node_modules/web-tree-sitter/web-tree-sitter.cjs --outfile=dist/pilot.js --log-level=warning && node dist/pilot.js",
     "opro": "esbuild scripts/opro.ts --bundle --platform=node --external:@anthropic-ai/sdk --external:dotenv --outfile=dist/opro.js && node dist/opro.js",
     "vsix": "npx --yes @vscode/vsce@4.1.1 package"
   },

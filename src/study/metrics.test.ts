@@ -198,6 +198,9 @@ describe('computeResults', () => {
     expect(r.costUsd.perAnalysis).toBeCloseTo((r.costUsd.total ?? 0) / 6);
     expect(r.latencyMs).toEqual({ p50: 2000, p95: 3000, max: 3000 });
     expect(r.hypotheses.find((h) => h.id === 'H1')?.pass).toBe(false);
+    // Undefined primary hits and twin comparisons are excluded, not failed.
+    expect(r.hypotheses.find((h) => h.id === 'H2')?.pass).toBeNull();
+    expect(r.hypotheses.find((h) => h.id === 'H3')?.pass).toBeNull();
   });
 
   test('cost is unknown when a model has no price', () => {
