@@ -1,5 +1,5 @@
 export interface NestedDeclaration {
-  type: 'class' | 'interface' | 'enum';
+  type: 'class' | 'interface' | 'enum' | 'record';
   name: string;
   implementedInterfaces: string[];
   annotations: string[];
@@ -10,6 +10,7 @@ export interface ConstructMetrics {
     | 'class'
     | 'interface'
     | 'enum'
+    | 'record'
     | 'method'
     | 'field'
     | 'unknown';
@@ -17,7 +18,7 @@ export interface ConstructMetrics {
   annotations: string[];
   startRow: number;
   enclosingClassStartRow: number | null;
-  /** Full source text of the class or interface being analysed. */
+  /** Full source text of the type declaration being analysed, without TC annotations. */
   classSource: string;
   classMetrics: {
     superclass: string | null;
@@ -49,6 +50,7 @@ export const DECLARATION_TYPES = new Set([
   'class_declaration',
   'interface_declaration',
   'enum_declaration',
+  'record_declaration',
   'method_declaration',
   'field_declaration',
 ]);
@@ -57,4 +59,13 @@ export const NESTED_TYPE_MAP: Record<string, NestedDeclaration['type']> = {
   class_declaration: 'class',
   interface_declaration: 'interface',
   enum_declaration: 'enum',
+  record_declaration: 'record',
 };
+
+// Declarations that can carry a TC annotation and enclose analysed members.
+export const TYPE_DECLARATION_TYPES = new Set([
+  'class_declaration',
+  'interface_declaration',
+  'enum_declaration',
+  'record_declaration',
+]);
