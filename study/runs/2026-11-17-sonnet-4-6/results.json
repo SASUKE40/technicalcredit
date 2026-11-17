@@ -1,0 +1,842 @@
+{
+  "pairs": [
+    {
+      "itemId": "adapter-credit",
+      "category": "abstraction",
+      "label": "yes",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "modularity",
+      "label": "unsure",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "api-stability",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "automation",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "configurability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "observability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "reusability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-credit",
+      "category": "compliance-readiness",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "abstraction",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "modularity",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "api-stability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "automation",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "configurability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "observability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "reusability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "category": "compliance-readiness",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "abstraction",
+      "label": "yes",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "modularity",
+      "label": "yes",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "api-stability",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "automation",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "configurability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "observability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "reusability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "compliance-readiness",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "abstraction",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "modularity",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "api-stability",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "automation",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "configurability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "observability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "reusability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "observer-no-credit",
+      "category": "compliance-readiness",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "abstraction",
+      "label": "yes",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "modularity",
+      "label": "unsure",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "api-stability",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "automation",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "configurability",
+      "label": "yes",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "observability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "reusability",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "compliance-readiness",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "abstraction",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "modularity",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "api-stability",
+      "label": "no",
+      "fired": 5,
+      "notFired": 0,
+      "errors": 0,
+      "majority": true,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "automation",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "configurability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "observability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "reusability",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "category": "compliance-readiness",
+      "label": "no",
+      "fired": 0,
+      "notFired": 5,
+      "errors": 0,
+      "majority": false,
+      "flipped": false
+    }
+  ],
+  "items": [
+    {
+      "itemId": "adapter-credit",
+      "variant": "credit",
+      "tc": true,
+      "perRepeat": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "majority": true,
+      "flipped": false,
+      "meanFiredCategories": 1
+    },
+    {
+      "itemId": "adapter-no-credit",
+      "variant": "no-credit",
+      "tc": false,
+      "perRepeat": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "majority": false,
+      "flipped": false,
+      "meanFiredCategories": 0
+    },
+    {
+      "itemId": "observer-credit",
+      "variant": "credit",
+      "tc": true,
+      "perRepeat": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "majority": true,
+      "flipped": false,
+      "meanFiredCategories": 2
+    },
+    {
+      "itemId": "observer-no-credit",
+      "variant": "no-credit",
+      "tc": false,
+      "perRepeat": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "majority": true,
+      "flipped": false,
+      "meanFiredCategories": 1
+    },
+    {
+      "itemId": "strategy-credit",
+      "variant": "credit",
+      "tc": true,
+      "perRepeat": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "majority": true,
+      "flipped": false,
+      "meanFiredCategories": 5
+    },
+    {
+      "itemId": "strategy-no-credit",
+      "variant": "no-credit",
+      "tc": false,
+      "perRepeat": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "majority": true,
+      "flipped": false,
+      "meanFiredCategories": 2
+    }
+  ],
+  "pooled": {
+    "tp": 2,
+    "fp": 8,
+    "fn": 3,
+    "tn": 33,
+    "n": 46,
+    "precision": 0.2,
+    "recall": 0.4,
+    "f1": 0.26666666666666666,
+    "accuracy": 0.7608695652173914
+  },
+  "perCategory": {
+    "abstraction": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tn": 3,
+      "n": 6,
+      "precision": null,
+      "recall": 0,
+      "f1": null,
+      "accuracy": 0.5
+    },
+    "modularity": {
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 2,
+      "n": 4,
+      "precision": 0.5,
+      "recall": 1,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.75
+    },
+    "api-stability": {
+      "tp": 0,
+      "fp": 5,
+      "fn": 0,
+      "tn": 1,
+      "n": 6,
+      "precision": 0,
+      "recall": null,
+      "f1": null,
+      "accuracy": 0.16666666666666666
+    },
+    "automation": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "tn": 5,
+      "n": 6,
+      "precision": 0,
+      "recall": null,
+      "f1": null,
+      "accuracy": 0.8333333333333334
+    },
+    "configurability": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 5,
+      "n": 6,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "observability": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 6,
+      "n": 6,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "accuracy": 1
+    },
+    "reusability": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "tn": 5,
+      "n": 6,
+      "precision": 0,
+      "recall": null,
+      "f1": null,
+      "accuracy": 0.8333333333333334
+    },
+    "compliance-readiness": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 6,
+      "n": 6,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "accuracy": 1
+    }
+  },
+  "baselines": {
+    "pairAlwaysYes": {
+      "tp": 5,
+      "fp": 41,
+      "fn": 0,
+      "tn": 0,
+      "n": 46,
+      "precision": 0.10869565217391304,
+      "recall": 1,
+      "f1": 0.19607843137254902,
+      "accuracy": 0.10869565217391304
+    },
+    "pairAlwaysNo": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 5,
+      "tn": 41,
+      "n": 46,
+      "precision": null,
+      "recall": 0,
+      "f1": null,
+      "accuracy": 0.8913043478260869
+    },
+    "itemDetector": {
+      "tp": 3,
+      "fp": 2,
+      "fn": 0,
+      "tn": 1,
+      "n": 6,
+      "precision": 0.6,
+      "recall": 1,
+      "f1": 0.7499999999999999,
+      "accuracy": 0.6666666666666666
+    },
+    "itemAlwaysYes": {
+      "tp": 3,
+      "fp": 3,
+      "fn": 0,
+      "tn": 0,
+      "n": 6,
+      "precision": 0.5,
+      "recall": 1,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5
+    },
+    "itemAlwaysNo": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tn": 3,
+      "n": 6,
+      "precision": null,
+      "recall": 0,
+      "f1": null,
+      "accuracy": 0.5
+    },
+    "itemPatternOracle": {
+      "tp": 3,
+      "fp": 2,
+      "fn": 0,
+      "tn": 1,
+      "n": 6,
+      "precision": 0.6,
+      "recall": 1,
+      "f1": 0.7499999999999999,
+      "accuracy": 0.6666666666666666
+    }
+  },
+  "pairFlipRate": 0,
+  "itemFlipRate": 0,
+  "primaryHits": [
+    {
+      "itemId": "adapter-credit",
+      "category": "abstraction",
+      "hit": false
+    },
+    {
+      "itemId": "observer-credit",
+      "category": "modularity",
+      "hit": true
+    },
+    {
+      "itemId": "strategy-credit",
+      "category": "configurability",
+      "hit": true
+    }
+  ],
+  "twinDiscrimination": [
+    {
+      "pair": "adapter",
+      "discriminated": false
+    },
+    {
+      "pair": "observer",
+      "discriminated": true
+    },
+    {
+      "pair": "strategy",
+      "discriminated": true
+    }
+  ],
+  "meanFiredCategories": {
+    "credit": 2.6666666666666665,
+    "noCredit": 1
+  },
+  "categoryDrift": 0.6363636363636364,
+  "calls": {
+    "total": 240,
+    "errors": 0
+  },
+  "latencyMs": {
+    "p50": 7926,
+    "p95": 10065,
+    "max": 10213
+  },
+  "tokens": {
+    "input": 276210,
+    "output": 56016,
+    "callsWithUsage": 240
+  },
+  "costUsd": {
+    "total": 1.6688700000000003,
+    "perAnalysis": 0.05562900000000001
+  },
+  "models": [
+    "claude-sonnet-4-6"
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Flip rate is below 5% of (item, category) pairs",
+      "observed": "0.0%",
+      "pass": true
+    },
+    {
+      "id": "H2",
+      "statement": "The primary category fires (majority) on at least 2/3 of credit twins",
+      "observed": "2/3",
+      "pass": true
+    },
+    {
+      "id": "H3",
+      "statement": "In at least 2/3 of pairs the credit twin's primary category fires and the no-credit twin's does not",
+      "observed": "2/3",
+      "pass": true
+    },
+    {
+      "id": "H4",
+      "statement": "Pooled pair-level F1 beats always-yes and accuracy beats always-no",
+      "observed": "F1 26.7% vs 19.6%; accuracy 76.1% vs 89.1%",
+      "pass": false
+    },
+    {
+      "id": "H5",
+      "statement": "Item-level TC accuracy beats the pattern-presence oracle (credit is not just pattern detection)",
+      "observed": "66.7% vs 66.7%",
+      "pass": false
+    },
+    {
+      "id": "H6",
+      "statement": "p95 latency per analysis is below 10 s",
+      "observed": "10.1 s",
+      "pass": false
+    }
+  ]
+}
