@@ -1,0 +1,22 @@
+{
+  "id": "adapter-credit",
+  "pair": "adapter",
+  "variant": "credit",
+  "file": "EmailNotifier.java",
+  "anchor": "EmailNotifier",
+  "tc": true,
+  "primaryCategory": "abstraction",
+  "categories": {
+    "abstraction": "yes",
+    "modularity": "unsure",
+    "api-stability": "no",
+    "automation": "no",
+    "compliance-readiness": "no",
+    "configurability": "no",
+    "observability": "no",
+    "reusability": "no"
+  },
+  "designPatterns": ["adapter"],
+  "rationale": "Implements the domain Notifier interface and translates its plain-text call into the vendor AcmeMailClient message and status-code API, so callers never see the vendor types (abstraction). Isolating the vendor dependency may also count as modularity.",
+  "labeller": "study author (single labeller, pre-run)"
+}

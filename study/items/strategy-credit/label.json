@@ -1,0 +1,22 @@
+{
+  "id": "strategy-credit",
+  "pair": "strategy",
+  "variant": "credit",
+  "file": "QuoteService.java",
+  "anchor": "QuoteService",
+  "tc": true,
+  "primaryCategory": "configurability",
+  "categories": {
+    "abstraction": "yes",
+    "modularity": "unsure",
+    "api-stability": "no",
+    "automation": "no",
+    "compliance-readiness": "no",
+    "configurability": "yes",
+    "observability": "no",
+    "reusability": "no"
+  },
+  "designPatterns": ["strategy"],
+  "rationale": "The pricing rule is chosen at runtime from the shipping.rule property among injected RateRule implementations, so behaviour changes without code changes (configurability). Callers depend only on the RateRule contract supplied through the constructor (abstraction). Whether adding rules without editing QuoteService counts as modularity is ambiguous.",
+  "labeller": "study author (single labeller, pre-run)"
+}

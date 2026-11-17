@@ -1,0 +1,22 @@
+{
+  "id": "observer-no-credit",
+  "pair": "observer",
+  "variant": "no-credit",
+  "file": "StockLevels.java",
+  "anchor": "StockLevels",
+  "tc": false,
+  "primaryCategory": null,
+  "categories": {
+    "abstraction": "no",
+    "modularity": "no",
+    "api-stability": "no",
+    "automation": "no",
+    "compliance-readiness": "no",
+    "configurability": "no",
+    "observability": "no",
+    "reusability": "no"
+  },
+  "designPatterns": ["observer"],
+  "rationale": "Structurally an observer subject, but it hard-wires a single ReorderDesk created inline, with no way to add or replace listeners, so there is no decoupling benefit.",
+  "labeller": "study author (single labeller, pre-run)"
+}

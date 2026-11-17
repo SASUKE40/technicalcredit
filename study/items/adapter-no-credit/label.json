@@ -1,0 +1,22 @@
+{
+  "id": "adapter-no-credit",
+  "pair": "adapter",
+  "variant": "no-credit",
+  "file": "EmailSender.java",
+  "anchor": "EmailSender",
+  "tc": false,
+  "primaryCategory": null,
+  "categories": {
+    "abstraction": "no",
+    "modularity": "no",
+    "api-stability": "no",
+    "automation": "no",
+    "compliance-readiness": "no",
+    "configurability": "no",
+    "observability": "no",
+    "reusability": "no"
+  },
+  "designPatterns": [],
+  "rationale": "A pass-through wrapper: no domain interface, no translation, and the vendor AcmeMessage type leaks through every public method, so callers stay coupled to the vendor API.",
+  "labeller": "study author (single labeller, pre-run)"
+}
