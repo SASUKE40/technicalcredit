@@ -1,16 +1,27 @@
 import * as vscode from 'vscode';
 
+import { ensureAnnotationType } from './ensureAnnotationType';
+import { applyChanges, countLineBreaks, type LineRange } from './pendingRanges';
+
 interface Pending {
   id: string;
   uri: vscode.Uri;
-  /** Range covering the inserted comment lines. */
-  range: vscode.Range;
+  /** Identifies the declaration the annotation belongs to, within its document. */
+  groupKey: string;
+  /** Lines covered by the inserted annotation, kept in sync with document edits. */
+  lines: LineRange;
+  /** Exact inserted text; an item is only acted on while the document still holds it. */
+  text: string;
 }
 
 /**
  * Tracks in-flight TC annotation previews and surfaces Accept / Dismiss CodeLenses
- * above each one. Previewed comments are real inserted text marked as pending via a
+ * above each one. Previewed annotations are real inserted text marked as pending via a
  * dimmed decoration: Accept keeps the text and clears styling, Dismiss deletes the lines.
+ *
+ * Line ranges follow every document edit. Any edit that touches a preview (typing in
+ * it, undo, revert) drops it from tracking, so Accept / Dismiss can never act on text
+ * the extension did not insert.
  */
 export class PendingAnnotation
   implements vscode.CodeLensProvider, vscode.Disposable
@@ -18,6 +29,7 @@ export class PendingAnnotation
   private pendingItems: Pending[] = [];
   private readonly decoration: vscode.TextEditorDecorationType;
   private readonly changed = new vscode.EventEmitter<void>();
+  private readonly subscriptions: vscode.Disposable[];
 
   readonly onDidChangeCodeLenses = this.changed.event;
 
@@ -30,124 +42,91 @@ export class PendingAnnotation
         'diffEditor.insertedTextBackground',
       ),
     });
+    this.subscriptions = [
+      vscode.workspace.onDidChangeTextDocument((e) => this.onDocumentChange(e)),
+      vscode.workspace.onDidCloseTextDocument((doc) =>
+        this.forget((p) => sameDocument(p.uri, doc.uri)),
+      ),
+      vscode.window.onDidChangeVisibleTextEditors(() =>
+        this.refreshDecorations(),
+      ),
+    ];
   }
 
   /**
-   * Inserts all comment texts above the given line in a single edit, stacking them
-   * in order. Each annotation gets its own Accept / Dismiss CodeLens.
+   * Inserts all annotation texts above `insertLine` in a single edit, stacking them in
+   * order under `groupKey`. Each annotation gets its own Accept / Dismiss CodeLens.
+   * Previews for other declarations and other documents are left untouched.
    */
   async previewAll(
-    editor: vscode.TextEditor,
+    uri: vscode.Uri,
     texts: string[],
     insertLine: number,
+    groupKey: string,
   ): Promise<void> {
-    if (this.pendingItems.length > 0) {
-      await this.dismissAll();
+    const edit = new vscode.WorkspaceEdit();
+    edit.insert(
+      uri,
+      new vscode.Position(insertLine, 0),
+      texts.map((t) => `${t}\n`).join(''),
+    );
+    if (!(await vscode.workspace.applyEdit(edit))) {
+      return;
     }
 
-    await editor.edit((builder) => {
-      builder.insert(
-        new vscode.Position(insertLine, 0),
-        texts.map((t) => `${t}\n`).join(''),
-      );
-    });
-
-    let rangeStart = insertLine;
+    let start = insertLine;
     for (const text of texts) {
-      const lines = text.split('\n');
-      const range = new vscode.Range(
-        rangeStart,
-        0,
-        rangeStart + lines.length - 1,
-        lines[lines.length - 1].length,
-      );
+      const lineCount = countLineBreaks(text) + 1;
       this.pendingItems.push({
         id: crypto.randomUUID(),
-        uri: editor.document.uri,
-        range,
+        uri,
+        groupKey,
+        lines: { start, end: start + lineCount - 1 },
+        text,
       });
-      rangeStart += lines.length;
+      start += lineCount;
     }
 
     this.refreshDecorations();
     this.changed.fire();
   }
 
-  /** ACCEPT: Keeps the annotation text, removes the pending styling. */
-  accept(id: string): void {
-    this.pendingItems = this.pendingItems.filter((p) => p.id !== id);
-    this.refreshDecorations();
-    this.changed.fire();
-  }
-
-  /** DISMISS: Deletes the annotation text and updates ranges of subsequent items. */
-  async dismiss(id: string): Promise<void> {
-    const index = this.pendingItems.findIndex((p) => p.id === id);
-    const item = this.pendingItems[index];
+  /** ACCEPT: Keeps the annotation text, removes the pending styling, and makes sure it compiles. */
+  async accept(id: string): Promise<void> {
+    const item = this.verified(id);
     if (!item) {
       return;
     }
-
-    const edit = new vscode.WorkspaceEdit();
-    edit.delete(
-      item.uri,
-      new vscode.Range(
-        new vscode.Position(item.range.start.line, 0),
-        new vscode.Position(item.range.end.line + 1, 0),
-      ),
-    );
-    await vscode.workspace.applyEdit(edit);
-
-    const deletedLineCount = item.range.end.line - item.range.start.line + 1;
-    this.pendingItems.splice(index, 1);
-
-    // Shift ranges of items that were below the deleted one
-    for (let i = index; i < this.pendingItems.length; i++) {
-      const p = this.pendingItems[i];
-      this.pendingItems[i] = {
-        ...p,
-        range: new vscode.Range(
-          p.range.start.line - deletedLineCount,
-          p.range.start.character,
-          p.range.end.line - deletedLineCount,
-          p.range.end.character,
-        ),
-      };
-    }
-
-    this.refreshDecorations();
-    this.changed.fire();
+    this.forget((p) => p.id === id);
+    await ensureAnnotationType(item.uri);
   }
 
-  /** Discards all pending annotations. */
-  async dismissAll(): Promise<void> {
-    if (this.pendingItems.length === 0) {
+  /** DISMISS: Deletes the annotation text; ranges of other items follow the edit. */
+  async dismiss(id: string): Promise<void> {
+    const item = this.verified(id);
+    if (!item) {
       return;
     }
+    await this.deleteItems([item]);
+  }
 
-    const edit = new vscode.WorkspaceEdit();
-    for (const item of [...this.pendingItems].reverse()) {
-      edit.delete(
-        item.uri,
-        new vscode.Range(
-          new vscode.Position(item.range.start.line, 0),
-          new vscode.Position(item.range.end.line + 1, 0),
-        ),
-      );
-    }
-    await vscode.workspace.applyEdit(edit);
-
-    this.pendingItems = [];
-    this.refreshDecorations();
-    this.changed.fire();
+  /**
+   * Discards the previews belonging to one declaration in one document, e.g. before
+   * re-analysing it. Only text that still matches what was inserted is deleted.
+   */
+  async dismissGroup(uri: vscode.Uri, groupKey: string): Promise<void> {
+    const items = this.pendingItems
+      .filter((p) => sameDocument(p.uri, uri) && p.groupKey === groupKey)
+      .map((p) => this.verified(p.id))
+      .filter((p): p is Pending => p !== null);
+    await this.deleteItems(items);
   }
 
   provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
     return this.pendingItems
-      .map((p) => ({ p }))
-      .filter(({ p }) => p.uri.toString() === document.uri.toString())
-      .flatMap(({ p }) => {
-        const anchor = new vscode.Range(p.range.start, p.range.start);
+      .filter((p) => sameDocument(p.uri, document.uri))
+      .flatMap((p) => {
+        const anchor = new vscode.Range(p.lines.start, 0, p.lines.start, 0);
         return [
           new vscode.CodeLens(anchor, {
             title: '$(check) Accept',
@@ -163,19 +142,122 @@ export class PendingAnnotation
       });
   }
 
+  dispose(): void {
+    this.subscriptions.forEach((s) => s.dispose());
+    this.decoration.dispose();
+    this.changed.dispose();
+  }
+
+  /**
+   * Returns the item if the document still holds its exact text at its tracked lines,
+   * otherwise stops tracking it and returns `null`.
+   */
+  private verified(id: string): Pending | null {
+    const item = this.pendingItems.find((p) => p.id === id);
+    if (!item) {
+      return null;
+    }
+    const document = vscode.workspace.textDocuments.find((d) =>
+      sameDocument(d.uri, item.uri),
+    );
+    const intact =
+      document !== undefined &&
+      item.lines.end < document.lineCount &&
+      document
+        .getText(lineSpan(document, item.lines))
+        .replace(/\r\n/g, '\n') === item.text;
+    if (!intact) {
+      this.forget((p) => p.id === id);
+      return null;
+    }
+    return item;
+  }
+
+  /** Deletes the whole lines of `items` in one edit; tracking updates via the change event. */
+  private async deleteItems(items: Pending[]): Promise<void> {
+    if (items.length === 0) {
+      return;
+    }
+    const edit = new vscode.WorkspaceEdit();
+    for (const item of items) {
+      edit.delete(
+        item.uri,
+        new vscode.Range(item.lines.start, 0, item.lines.end + 1, 0),
+      );
+    }
+    const ids = new Set(items.map((i) => i.id));
+    this.forget((p) => ids.has(p.id));
+    await vscode.workspace.applyEdit(edit);
+  }
+
+  private onDocumentChange(event: vscode.TextDocumentChangeEvent): void {
+    if (event.contentChanges.length === 0) {
+      return;
+    }
+    const changes = event.contentChanges.map((c) => ({
+      startLine: c.range.start.line,
+      startCharacter: c.range.start.character,
+      endLine: c.range.end.line,
+      endCharacter: c.range.end.character,
+      text: c.text,
+    }));
+
+    let affected = false;
+    this.pendingItems = this.pendingItems.flatMap((p) => {
+      if (!sameDocument(p.uri, event.document.uri)) {
+        return [p];
+      }
+      const lines = applyChanges(p.lines, changes);
+      if (
+        !lines ||
+        lines.start !== p.lines.start ||
+        lines.end !== p.lines.end
+      ) {
+        affected = true;
+      }
+      return lines ? [{ ...p, lines }] : [];
+    });
+
+    if (affected) {
+      this.refreshDecorations();
+      this.changed.fire();
+    }
+  }
+
+  private forget(predicate: (p: Pending) => boolean): void {
+    const before = this.pendingItems.length;
+    this.pendingItems = this.pendingItems.filter((p) => !predicate(p));
+    if (this.pendingItems.length !== before) {
+      this.refreshDecorations();
+      this.changed.fire();
+    }
+  }
+
   private refreshDecorations(): void {
     for (const editor of vscode.window.visibleTextEditors) {
       editor.setDecorations(
         this.decoration,
         this.pendingItems
-          .filter((p) => p.uri.toString() === editor.document.uri.toString())
-          .map((p) => p.range),
+          .filter((p) => sameDocument(p.uri, editor.document.uri))
+          .map((p) => lineSpan(editor.document, p.lines)),
       );
     }
   }
+}
 
-  dispose(): void {
-    this.decoration.dispose();
-    this.changed.dispose();
-  }
+function sameDocument(a: vscode.Uri, b: vscode.Uri): boolean {
+  return a.toString() === b.toString();
+}
+
+/** Range from the start of `lines.start` to the end of `lines.end`, excluding the final line break. */
+function lineSpan(
+  document: vscode.TextDocument,
+  lines: LineRange,
+): vscode.Range {
+  return new vscode.Range(
+    lines.start,
+    0,
+    lines.end,
+    document.lineAt(Math.min(lines.end, document.lineCount - 1)).text.length,
+  );
 }
