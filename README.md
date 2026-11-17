@@ -101,7 +101,7 @@ Credit in Java source code?_
 
 ## Requirements
 
-- [VS Code](https://code.visualstudio.com/) `^1.120.0`
+- [VS Code](https://code.visualstudio.com/) `^1.138.0`
 - [Node.js](https://nodejs.org/) 18+
 - [Anthropic API key](https://console.anthropic.com/) (the extension calls the
   Claude API at analysis time)
@@ -116,13 +116,37 @@ cd TechnicalCredit
 # 2. Install dependencies
 npm install
 
-# 3. Provide your Anthropic API key
-#    Create a .env file in the repository root:
-echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
-
-# 4. Build the extension
+# 3. Build the extension
 npm run compile
 ```
+
+To install it like an end user would, package and install a `.vsix`:
+
+```bash
+npm run vsix
+code --install-extension technicalcredit-0.0.1.vsix
+```
+
+### API key
+
+Run **Technical Credit: Set API Key** from the Command Palette and paste your
+Anthropic key. It is stored in VS Code SecretStorage, not in settings or files.
+**Technical Credit: Clear API Key** removes it.
+
+If no key is stored, the extension falls back to the `ANTHROPIC_API_KEY`
+environment variable of the VS Code process. For development and the Jest suite, you
+can put `ANTHROPIC_API_KEY=sk-ant-...` in a `.env` file in the repository root. `.env`
+is git-ignored and excluded from the `.vsix`.
+
+### Settings
+
+| Setting                       | Default             | Env override     | Description                                                      |
+| ----------------------------- | ------------------- | ---------------- | ---------------------------------------------------------------- |
+| `technicalcredit.model`       | `claude-sonnet-4-6` | `TC_MODEL`       | Claude model ID used for every heuristic call                    |
+| `technicalcredit.temperature` | `0`                 | `TC_TEMPERATURE` | Sampling temperature; `null` (or `none` in the env var) omits it |
+
+Every call logs the requested model, the model ID the API returned, token usage, and
+latency to the **TechnicalCredit** output channel.
 
 ### Available scripts
 
@@ -131,6 +155,7 @@ npm run compile
 | `npm run compile`    | Type-check, lint, and bundle with esbuild                    |
 | `npm run watch`      | Watch mode — runs `tsc` and esbuild in parallel              |
 | `npm run package`    | Production build (minified, no sourcemaps)                   |
+| `npm run vsix`       | Package the extension as an installable `.vsix`              |
 | `npm test`           | Run the Jest test suite                                      |
 | `npm run lint:check` | Lint with zero-warning enforcement                           |
 | `npm run lint:fix`   | Auto-fix lint issues                                         |
@@ -173,7 +198,11 @@ The suite has two layers:
   `createUserPrompt` → `callClaude`) via the `support/analyseLive.ts` helper, then
   assert on the parsed `TCResult` JSON (positive and negative cases per heuristic).
   These make real Claude API calls, so they **require `ANTHROPIC_API_KEY`** and use a
-  60s per-test timeout.
+  60s per-test timeout. `npm test` bundles `dist/` first, because the parser loads its
+  WebAssembly grammar from there.
+- **Claude client and prompt unit tests** (`claudeClient.test.ts`,
+  `heuristicPrompts.test.ts`) — check model/temperature/API key resolution, error
+  messages, and that every heuristic has real criteria. These run offline.
 
 Remaining heuristics do not yet have dedicated live fixture coverage.
 
@@ -184,6 +213,7 @@ src/
 ├── extension.ts              # Entry point: init parser + register commands
 ├── registry.ts               # Wires up commands and CodeLens providers
 ├── analyse.ts                # Orchestrator: runs all heuristics in parallel
+├── claudeSettings.ts         # Settings + SecretStorage key → Claude client; key commands
 ├── context/                  # Cursor → AST → construct metrics
 │   ├── buildContext.ts
 │   ├── findAdrs.ts           # Scans docs/ for ADR markdown + tc-* frontmatter
@@ -198,7 +228,7 @@ src/
 │   ├── adrPrompt.ts          # Prompt for matching a candidate to an ADR
 │   └── heuristics/           # 8 category-specific prompts
 ├── utils/
-│   └── claude.ts             # Claude API client (model, timeout, JSON prefill)
+│   └── claude.ts             # Claude API client (config, errors, timeout, JSON prefill)
 └── test/                     # Jest tests + Java fixtures
 ```
 
@@ -213,8 +243,8 @@ src/
   when one is present and clearly matches.
 - **Requires network access and a valid API key.** Each analysis makes eight live
   Claude API calls (one per heuristic, 30s timeout each), plus one additional call
-  per detected candidate when ADRs are present. Analysis fails without
-  `ANTHROPIC_API_KEY` set.
+  per detected candidate when ADRs are present. Analysis stops with a prompt to run
+  **Technical Credit: Set API Key** when no key is available.
 - **No caching or deduplication.** The same construct analyzed twice fires the full
   set of API calls again and may insert a second annotation. Responses should be
   cached by file hash and analyzed constructs tracked to prevent re-insertion.
