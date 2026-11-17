@@ -2,6 +2,7 @@ import {
   applyChange,
   applyChanges,
   countLineBreaks,
+  holdsTextAt,
   type LineChange,
 } from '@/comment/pendingRanges';
 
@@ -96,5 +97,39 @@ describe('countLineBreaks', () => {
   test('counts LF, CRLF and CR', () => {
     expect(countLineBreaks('a\nb\r\nc\rd')).toBe(3);
     expect(countLineBreaks('')).toBe(0);
+  });
+});
+
+describe('holdsTextAt', () => {
+  const source =
+    'package shop;\n@TechnicalCredit(\n    category = "x")\nclass A {}\n';
+
+  test('matches the exact text on the tracked lines', () => {
+    expect(
+      holdsTextAt(
+        source,
+        { start: 1, end: 2 },
+        '@TechnicalCredit(\n    category = "x")',
+      ),
+    ).toBe(true);
+  });
+
+  test('ignores line-ending differences', () => {
+    expect(
+      holdsTextAt(
+        source.replace(/\n/g, '\r\n'),
+        { start: 1, end: 2 },
+        '@TechnicalCredit(\n    category = "x")',
+      ),
+    ).toBe(true);
+  });
+
+  test('rejects shifted, edited or out-of-range text', () => {
+    const text = '@TechnicalCredit(\n    category = "x")';
+    expect(holdsTextAt(source, { start: 0, end: 1 }, text)).toBe(false);
+    expect(
+      holdsTextAt(source.replace('"x"', '"y"'), { start: 1, end: 2 }, text),
+    ).toBe(false);
+    expect(holdsTextAt(source, { start: 4, end: 5 }, text)).toBe(false);
   });
 });

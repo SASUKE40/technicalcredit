@@ -70,3 +70,19 @@ export function applyChanges(
   }
   return current;
 }
+
+/** True when `source` holds exactly `text` on `lines`, whatever its line endings. */
+export function holdsTextAt(
+  source: string,
+  lines: LineRange,
+  text: string,
+): boolean {
+  const sourceLines = source.split(/\r\n|\r|\n/);
+  if (lines.start < 0 || lines.end >= sourceLines.length) {
+    return false;
+  }
+  return (
+    sourceLines.slice(lines.start, lines.end + 1).join('\n') ===
+    text.replace(/\r\n|\r/g, '\n')
+  );
+}

@@ -1,7 +1,12 @@
 import * as vscode from 'vscode';
 
 import { ensureAnnotationType } from './ensureAnnotationType';
-import { applyChanges, countLineBreaks, type LineRange } from './pendingRanges';
+import {
+  applyChanges,
+  countLineBreaks,
+  holdsTextAt,
+  type LineRange,
+} from './pendingRanges';
 
 interface Pending {
   id: string;
@@ -14,6 +19,10 @@ interface Pending {
   text: string;
 }
 
+type StoredPending = Omit<Pending, 'uri'> & { uri: string };
+
+const STATE_KEY = 'technicalcredit.pendingAnnotations';
+
 /**
  * Tracks in-flight TC annotation previews and surfaces Accept / Dismiss CodeLenses
  * above each one. Previewed annotations are real inserted text marked as pending via a
@@ -22,18 +31,25 @@ interface Pending {
  * Line ranges follow every document edit. Any edit that touches a preview (typing in
  * it, undo, revert) drops it from tracking, so Accept / Dismiss can never act on text
  * the extension did not insert.
+ *
+ * Previews are kept in workspace state, so a preview saved to disk is still pending
+ * after its editor is closed or VS Code restarts. Edits made while a document is
+ * closed are not seen, so items are re-checked against the text whenever it opens.
  */
 export class PendingAnnotation
   implements vscode.CodeLensProvider, vscode.Disposable
 {
-  private pendingItems: Pending[] = [];
+  private pendingItems: Pending[];
   private readonly decoration: vscode.TextEditorDecorationType;
   private readonly changed = new vscode.EventEmitter<void>();
   private readonly subscriptions: vscode.Disposable[];
 
   readonly onDidChangeCodeLenses = this.changed.event;
 
-  constructor() {
+  constructor(private readonly state: vscode.Memento) {
+    this.pendingItems = state
+      .get<StoredPending[]>(STATE_KEY, [])
+      .map((p) => ({ ...p, uri: vscode.Uri.parse(p.uri) }));
     this.decoration = vscode.window.createTextEditorDecorationType({
       isWholeLine: true,
       fontStyle: 'italic',
@@ -44,13 +60,13 @@ export class PendingAnnotation
     });
     this.subscriptions = [
       vscode.workspace.onDidChangeTextDocument((e) => this.onDocumentChange(e)),
-      vscode.workspace.onDidCloseTextDocument((doc) =>
-        this.forget((p) => sameDocument(p.uri, doc.uri)),
-      ),
+      vscode.workspace.onDidOpenTextDocument((doc) => this.revalidate(doc)),
       vscode.window.onDidChangeVisibleTextEditors(() =>
         this.refreshDecorations(),
       ),
     ];
+    vscode.workspace.textDocuments.forEach((doc) => this.revalidate(doc));
+    this.refreshDecorations();
   }
 
   /**
@@ -75,9 +91,10 @@ export class PendingAnnotation
     }
 
     let start = insertLine;
+    const added: Pending[] = [];
     for (const text of texts) {
       const lineCount = countLineBreaks(text) + 1;
-      this.pendingItems.push({
+      added.push({
         id: crypto.randomUUID(),
         uri,
         groupKey,
@@ -86,9 +103,7 @@ export class PendingAnnotation
       });
       start += lineCount;
     }
-
-    this.refreshDecorations();
-    this.changed.fire();
+    this.setItems([...this.pendingItems, ...added]);
   }
 
   /** ACCEPT: Keeps the annotation text, removes the pending styling, and makes sure it compiles. */
@@ -160,17 +175,24 @@ export class PendingAnnotation
     const document = vscode.workspace.textDocuments.find((d) =>
       sameDocument(d.uri, item.uri),
     );
-    const intact =
-      document !== undefined &&
-      item.lines.end < document.lineCount &&
-      document
-        .getText(lineSpan(document, item.lines))
-        .replace(/\r\n/g, '\n') === item.text;
-    if (!intact) {
+    if (
+      document === undefined ||
+      !holdsTextAt(document.getText(), item.lines, item.text)
+    ) {
       this.forget((p) => p.id === id);
       return null;
     }
     return item;
+  }
+
+  /** Drops items for `document` whose text is no longer where it was tracked. */
+  private revalidate(document: vscode.TextDocument): void {
+    const source = document.getText();
+    this.forget(
+      (p) =>
+        sameDocument(p.uri, document.uri) &&
+        !holdsTextAt(source, p.lines, p.text),
+    );
   }
 
   /** Deletes the whole lines of `items` in one edit; tracking updates via the change event. */
@@ -203,7 +225,7 @@ export class PendingAnnotation
     }));
 
     let affected = false;
-    this.pendingItems = this.pendingItems.flatMap((p) => {
+    const items = this.pendingItems.flatMap((p) => {
       if (!sameDocument(p.uri, event.document.uri)) {
         return [p];
       }
@@ -219,18 +241,25 @@ export class PendingAnnotation
     });
 
     if (affected) {
-      this.refreshDecorations();
-      this.changed.fire();
+      this.setItems(items);
     }
   }
 
   private forget(predicate: (p: Pending) => boolean): void {
-    const before = this.pendingItems.length;
-    this.pendingItems = this.pendingItems.filter((p) => !predicate(p));
-    if (this.pendingItems.length !== before) {
-      this.refreshDecorations();
-      this.changed.fire();
+    const remaining = this.pendingItems.filter((p) => !predicate(p));
+    if (remaining.length !== this.pendingItems.length) {
+      this.setItems(remaining);
     }
+  }
+
+  private setItems(items: Pending[]): void {
+    this.pendingItems = items;
+    void this.state.update(
+      STATE_KEY,
+      items.map((p): StoredPending => ({ ...p, uri: p.uri.toString() })),
+    );
+    this.refreshDecorations();
+    this.changed.fire();
   }
 
   private refreshDecorations(): void {
